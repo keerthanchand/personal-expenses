@@ -4,11 +4,12 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget{
+class MyApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context){
-    return MaterialApp(title: 'Flutter App',
-    home: MyHomePage(),
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter App',
+      home: MyHomePage(),
     );
   }
 }
@@ -20,8 +21,17 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Flutter App'),
       ),
-      body: Center(
-        child: Text('Widget playground'),
+      body: Column(
+        children: <Widget>[
+          Container(
+            child: Card(
+              child: Text('chart'),
+            ),
+          ),
+          Card(
+            child: Text('transaction'),
+          )
+        ],
       ),
     );
   }
