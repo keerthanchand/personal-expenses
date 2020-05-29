@@ -3,8 +3,11 @@ import 'package:expenses_tracker/widgets/transaction_list.dart';
 import './widgets/new_transaction.dart';
 
 import './widgets/transaction_list.dart';
+import './widgets/chart.dart';
+
 import 'package:flutter/material.dart';
 import './models/transaction.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -13,7 +16,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter App',
+      title: 'Personal Expenses',
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+      ),
       home: MyHomePage(),
     );
   }
@@ -28,19 +34,29 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransaction = [
-    Transaction(
-      id: 't1',
-      title: 'Electricity Bill',
-      amount: 150,
-      date: DateTime.now(),
-    ),
-    Transaction(
-      id: 't2',
-      title: 'shoes',
-      amount: 799,
-      date: DateTime.now(),
-    ),
+    // Transaction(
+    //   id: 't1',
+    //   title: 'Electricity Bill',
+    //   amount: 150,
+    //   date: DateTime.now(),
+    // ),
+    // Transaction(
+    //   id: 't2',
+    //   title: 'shoes',
+    //   amount: 799,
+    //   date: DateTime.now(),
+    // ),
   ];
+
+  List<Transaction> get _recentTransactions {
+    return _userTransaction.where((tx) {
+      return tx.date.isAfter(
+        DateTime.now().subtract(
+          Duration(days: 7),
+        ),
+      ); 
+    }).toList();
+  }
 
   void _addNewTransaction(String txTitle, double txAmount) {
     final newTx = Transaction(
@@ -56,17 +72,19 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _startAddNewTransaction(BuildContext ctx){
-      showModalBottomSheet(context: ctx, builder: (_) {
-        return NewTransaction(_addNewTransaction);
-      });
+  void _startAddNewTransaction(BuildContext ctx) {
+    showModalBottomSheet(
+        context: ctx,
+        builder: (_) {
+          return NewTransaction(_addNewTransaction);
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flutter App'),
+        title: Text('Personal Expenses'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
@@ -78,15 +96,8 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Card(
-                elevation: 5,
-                color: Colors.lightBlue,
-                child: Text('chart'),
-              ),
-            ),
-            TransactionList(_userTransaction)
+            Chart(_recentTransactions),
+            TransactionList(_userTransaction),
           ],
         ),
       ),
@@ -94,6 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () => _startAddNewTransaction(context),
+        elevation: 10,
       ),
     );
   }
